@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import coil.load
+import com.example.corona.R
 import com.example.corona.databinding.FragmentSearchBinding
+import com.example.corona.utils.formatNumber
 
 class SearchFragment : Fragment() {
 
@@ -28,13 +30,40 @@ class SearchFragment : Fragment() {
             ViewModelProvider(this).get(SearchViewModel::class.java)
 
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        binding.searchButton.setOnClickListener {
+            searchViewModel.getCountry(binding.outlinedTextField.editText?.text.toString())
+        }
+        searchViewModel.country.observe(viewLifecycleOwner, {
+            if (it == null) {
+                binding.noData.visibility = View.VISIBLE
+                binding.cardView.visibility = View.GONE
+            } else {
+                binding.noData.visibility = View.GONE
+                val imgUri = it.countryInfo.flag.toUri().buildUpon().scheme("https").build()
+                binding.countryFlag.load(imgUri) {
+                    placeholder(R.drawable.ic_blur)
+                    error(R.drawable.ic_error)
+                }
+                binding.countryTitle.text = it.country
+                binding.cases.text = context?.getString(
+                    R.string.cases,
+                    formatNumber(it.cases)
+                )
+                binding.todayCases.text = context?.getString(
+                    R.string.today_cases,
+                    formatNumber(it.todayCases)
+                )
+                binding.deaths.text = context?.getString(
+                    R.string.deaths,
+                    formatNumber(it.deaths)
+                )
+                binding.todayDeaths.text =
+                    context?.getString(R.string.today_deaths, formatNumber(it.todayDeaths))
+                binding.cardView.visibility = View.VISIBLE
 
-        val textView: TextView = binding.textDashboard
-        searchViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
+            }
         })
-        return root
+        return binding.root
     }
 
     override fun onDestroyView() {

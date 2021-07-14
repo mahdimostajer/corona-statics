@@ -39,12 +39,9 @@ class HomeViewModel : ViewModel() {
             _status.value = ApiStatus.PENDING
             try {
                 val result=GitApiService.retrofitService.getCountries(sort, true)
-                Log.d("home viewModel",result.toString())
                 _countries.value = result
                 _status.value = ApiStatus.SUCCESS
-                Log.d("viewModel", _countries.value?.size.toString())
             } catch (e: Exception) {
-                e.message?.let { Log.d("home viewModel", it) }
                 _countries.value = listOf()
                 _status.value = ApiStatus.FAILED
             }
