@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">corona</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_search">search</string>
+    <string name="title_chart">chart</string>
+    <string name="label_sort_menu">sort by</string>
+    <string name="cases">cases: %s</string>
+    <string name="today_cases">today cases: %s</string>
+    <string name="deaths">deaths: %s</string>
+    <string name="today_deaths">today deaths: %s</string>
+
 </resources>
