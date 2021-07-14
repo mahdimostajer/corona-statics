@@ -8,5 +8,7 @@
     <string name="today_cases">today cases: %s</string>
     <string name="deaths">deaths: %s</string>
     <string name="today_deaths">today deaths: %s</string>
+    <string name="country_name">country name</string>
+    <string name="no_data">no data</string>
 
 </resources>
