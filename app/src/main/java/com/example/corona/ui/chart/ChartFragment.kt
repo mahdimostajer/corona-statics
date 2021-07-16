@@ -1,14 +1,21 @@
 package com.example.corona.ui.chart
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.corona.R
 import com.example.corona.databinding.FragmentChartBinding
+import com.example.corona.utils.distanceBetweenDates
+import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import kotlin.math.abs
+
 
 class ChartFragment : Fragment() {
 
@@ -23,22 +30,59 @@ class ChartFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         chartViewModel =
             ViewModelProvider(this).get(ChartViewModel::class.java)
 
         _binding = FragmentChartBinding.inflate(inflater, container, false)
-        val root: View = binding.root
 
-        val textView: TextView = binding.textNotifications
-        chartViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
+        val entries = ArrayList<Entry>()
+        chartViewModel.history.observe(viewLifecycleOwner, {
+            if (it != null) {
+                for ((key, value) in it.cases) {
+                    entries.add(Entry(abs(30 - distanceBetweenDates(key)), value.toFloat()))
+                    Log.d("chartFragment", abs(30 - distanceBetweenDates(key)).toString())
+
+                }
+                Log.d("chartFragment", sortEntries(entries).toString())
+                val vl = LineDataSet(sortEntries(entries), "cases")
+
+                vl.setDrawValues(false)
+                vl.setDrawFilled(true)
+                vl.lineWidth = 3f
+                vl.fillColor = R.color.gray
+                vl.fillAlpha = R.color.red
+
+                binding.lineChart.xAxis.labelRotationAngle = 0f
+
+                binding.lineChart.data = LineData(vl)
+
+                binding.lineChart.axisRight.isEnabled = false
+                binding.lineChart.xAxis.axisMaximum = 30f + 0.1f
+
+                binding.lineChart.setTouchEnabled(true)
+                binding.lineChart.setPinchZoom(true)
+
+                binding.lineChart.description.text = "Days"
+                binding.lineChart.setNoDataText("No forex yet!")
+
+                binding.lineChart.animateX(1800, Easing.EaseInExpo)
+
+                val markerView = CustomMarker(requireContext(), R.layout.marker_view)
+                binding.lineChart.marker = markerView
+            }
         })
-        return root
+
+
+        return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    fun sortEntries(entries: ArrayList<Entry>): ArrayList<Entry> {
+        val comparator = Comparator { o1: Entry, o2: Entry ->
+            return@Comparator (o1.x - o2.x).toInt()
+        }
+        val copy = arrayListOf<Entry>().apply { addAll(entries) }
+        copy.sortWith(comparator)
+        return copy
     }
 }

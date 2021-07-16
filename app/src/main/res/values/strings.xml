@@ -10,5 +10,6 @@
     <string name="today_deaths">today deaths: %s</string>
     <string name="country_name">country name</string>
     <string name="no_data">no data</string>
+    <string name="dash">.</string>
 
 </resources>
