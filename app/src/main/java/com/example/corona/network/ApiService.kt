@@ -1,24 +1,11 @@
 package com.example.corona.network
 
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-private const val BASE_URL = "https://corona.lmao.ninja/v2/"
 
-private val loggingInterceptor =
-    HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-private val okHttpClient = OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
-private val retrofit = Retrofit.Builder()
-    .addConverterFactory(GsonConverterFactory.create())
-    .client(okHttpClient)
-    .baseUrl(BASE_URL).build()
-
-interface GitApi {
+interface CoronaApi {
     @GET("countries")
     suspend fun getCountries(
         @Query("sort") sort: String,
@@ -34,10 +21,4 @@ interface GitApi {
 
     @GET("historical/all")
     suspend fun getHistory(): History
-}
-
-object GitApiService {
-    val retrofitService: GitApi by lazy {
-        retrofit.create(GitApi::class.java)
-    }
 }

@@ -1,12 +1,13 @@
 package com.example.corona.ui.chart
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import com.example.corona.MyApplication
 import com.example.corona.R
 import com.example.corona.databinding.FragmentChartBinding
 import com.example.corona.utils.distanceBetweenDates
@@ -14,12 +15,14 @@ import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import javax.inject.Inject
 import kotlin.math.abs
 
 
 class ChartFragment : Fragment() {
 
-    private lateinit var chartViewModel: ChartViewModel
+    @Inject
+    lateinit var chartViewModel: ChartViewModel
     private var _binding: FragmentChartBinding? = null
 
     // This property is only valid between onCreateView and
@@ -31,8 +34,7 @@ class ChartFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        chartViewModel =
-            ViewModelProvider(this).get(ChartViewModel::class.java)
+
 
         _binding = FragmentChartBinding.inflate(inflater, container, false)
 
@@ -84,5 +86,9 @@ class ChartFragment : Fragment() {
         val copy = arrayListOf<Entry>().apply { addAll(entries) }
         copy.sortWith(comparator)
         return copy
+    }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().application as MyApplication).appComponent.inject(this)
     }
 }

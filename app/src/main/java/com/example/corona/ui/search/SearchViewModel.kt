@@ -4,12 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.corona.network.CoronaApi
 import com.example.corona.network.Country
-import com.example.corona.network.GitApiService
 import com.example.corona.ui.home.ApiStatus
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SearchViewModel : ViewModel() {
+class SearchViewModel @Inject constructor(private val coronaApi: CoronaApi) : ViewModel() {
     private val _country = MutableLiveData<Country?>()
     val country: MutableLiveData<Country?> = _country
 
@@ -20,7 +21,7 @@ class SearchViewModel : ViewModel() {
         viewModelScope.launch {
             _status.value = ApiStatus.PENDING
             try {
-                val result = GitApiService.retrofitService.getCountry(countryName)
+                val result = coronaApi.getCountry(countryName)
                 _country.value = result
                 _status.value = ApiStatus.SUCCESS
             } catch (e: Exception) {
