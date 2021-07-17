@@ -5,15 +5,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.corona.network.CoronaApi
 import com.example.corona.network.Country
-import com.example.corona.network.GitApiService
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 enum class ApiStatus {
     PENDING, FAILED, SUCCESS
 }
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel @Inject constructor(private val coronaApi: CoronaApi) : ViewModel() {
 
     private val _countries = MutableLiveData<List<Country>>()
     val countries: LiveData<List<Country>> = _countries
@@ -38,7 +39,7 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch {
             _status.value = ApiStatus.PENDING
             try {
-                val result=GitApiService.retrofitService.getCountries(sort, true)
+                val result=coronaApi.getCountries(sort, true)
                 _countries.value = result
                 _status.value = ApiStatus.SUCCESS
             } catch (e: Exception) {
