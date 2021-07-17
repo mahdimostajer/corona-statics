@@ -11,5 +11,6 @@
     <string name="country_name">country name</string>
     <string name="no_data">no data</string>
     <string name="dash">.</string>
+    <string name="chart_fragment_title">world\'s total cases in past month</string>
 
 </resources>

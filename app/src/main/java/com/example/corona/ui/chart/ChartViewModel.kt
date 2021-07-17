@@ -17,10 +17,10 @@ class ChartViewModel : ViewModel() {
     val status: LiveData<ApiStatus> = _status
 
     init {
-        getCountry()
+        getHistory()
     }
 
-    fun getCountry() {
+    private fun getHistory() {
         viewModelScope.launch {
             _status.value = ApiStatus.PENDING
             try {
