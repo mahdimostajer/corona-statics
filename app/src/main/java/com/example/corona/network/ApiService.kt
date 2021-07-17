@@ -31,6 +31,9 @@ interface GitApi {
         @Query("yesterday") yesterday: Boolean = true,
         @Query("strict") strict: Boolean = true,
     ): Country
+
+    @GET("historical/all")
+    suspend fun getHistory(): History
 }
 
 object GitApiService {
